@@ -2,9 +2,9 @@
 title: Mycorrhizal fungi move phosphorous across networks to increase trade gains
   from plants - Data Analysis
 output:
-  html_document: default
-  word_document: default
   pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
