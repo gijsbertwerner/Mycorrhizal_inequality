@@ -227,7 +227,7 @@ Anova(perc_vac_poly_lme)
 
 # Figure 3 - Phosphorus movement among hyphal compartments
 
-In the third figure, we will visualise the movement of phosphorus both from the rich to the poor compartment, and in the opposite direction. We will statistically analyse the net movement, i.e. the difference between flow in both directions. 
+In the third figure, we will visualise the movement of phosphorus inside the fungal network both from the rich to the poor compartment, and in the opposite direction. We will statistically analyse the net movement, i.e. the difference between flow in both directions. 
 
 ## Modelling & Model Assumptions
 
@@ -252,7 +252,7 @@ The residual plot reveals some heteroscedasticity, and the QQ-plot shows a clear
 kruskal_non_origin_P_net_movement
 ```
 
-This shows that inequality is a highly signficant predictor of net phosphorus movement between the two fungal compartments. 
+This shows that inequality is a highly signficant predictor of net phosphorus movement between the fungal networks in both compartments. 
 
 ### Visualisation (Figure 3)
 
@@ -262,7 +262,7 @@ We will generate a figure showing the phosphorus movement in both directions (fo
 knitr::include_graphics("./Figures/Figure3.png")
 ```
 
-As expected, this figures shows that in the plates without inequality, where both compartments are equal, net movement is close to zero. In both other conditions, there is net movement from the rich to the poor compartments. 
+As expected, this figures shows that in the plates without inequality, where both compartments are equal, net movement is close to zero. In both other conditions, there is net movement from the fungal network in the rich compartment to the poor compartment network. 
 
 # Figure 4 - Fungal benefit received per unit P transferred
 
