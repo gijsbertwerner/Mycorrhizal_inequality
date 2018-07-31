@@ -2,9 +2,9 @@ Mycorrhizal Inequality Paper - Data Analysis
 Gijsbert Werner, University of Oxford
 July 2018
 
-This folder contains all the data and scrits to reproduce the full analyses from Whiteside et al.
+This folder contains all the data and scripts to reproduce the full analyses from Whiteside et al.
 
-All data files are available as csv-files in the 'Data' folder. 
+All data files are available as csv-files in the 'Data' folder (data folder to be uploaeded to GitHub upon acceptance). 
 
 All analyses were peformed in R 3.4.4, using R-packages ggplot2 (version 3.0.0), reshape2 (1.4.3), nlme (3.1-137), car (3.0.0), ggpubr (0.1.7), gridExtra (2.3) and dplyr (0.7.6). 
 
