@@ -20,7 +20,8 @@ library(gridExtra)
 library(boot)
 library(dplyr)
 stderr <- function(x) sqrt(var(x,na.rm=TRUE)/length(na.omit(x)))
-
+dir.create("./Models")
+dir.create("./Figures")
 
 # Load Data ---------------------------------------------------------------
 
