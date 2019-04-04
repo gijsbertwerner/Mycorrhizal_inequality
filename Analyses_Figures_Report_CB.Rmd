@@ -1,5 +1,6 @@
 ---
-title: Tracking quantum-dot tagged phosphorus across mycorrhizal networks to study resource movement, redistribution and trade - Data Analysis
+title: Mycorrhizal fungi move phosphorous across networks to increase trade gains
+  from plants - Data Analysis
 output:
   html_document: default
   word_document: default
@@ -13,6 +14,8 @@ library(boot)
 library(quantreg)
 library(dplyr)
 ```
+
+GW: This is a rerun of the July 27-31 analysis + report script, for the CB resub. Purpose is to double check if the figures are still the samem, which they should be, beause no new/mistaken data, unless I am forgeting something (very well possible!). It's all exactly the same as July 2018, e.g. numbers are NOT yet updated to new CB order, but I also added the analytical strategy from Science Nov 2018 resubmission (i.e the glmer strategy), alongside the previous Kruskal-wallis (see my main text comment)
 
 This document presents the statistical analyses performed and reported in Whiteside et al. We here report all the statistical tests performed, including diagnostic plots and the full paper figures. 
 
@@ -230,7 +233,7 @@ In the third figure, we will visualise the movement of phosphorus both from the 
 
 ## Modelling & Model Assumptions
 
-### Linear Model
+### Linear Model 
 
 We will test if inequality level is a signficant predictor of P-movement by analysing a linear mixed model of transfer numbers with inequality level, movement direction and their interaction as explanatory variables. A signficant interaction would indicate an effect of inequality on the direction of P-transfer.  
 
@@ -245,7 +248,7 @@ qqline(resid(p_movement_glmer))
 
 We find that the assumptions of our this test are reasonably well met, although there are some outliers. What does the model tell us? 
 
-```{r,echo,warning=FALSE,message=F}
+```{r,echo=F,warning=FALSE,message=F}
 library(nlme)
 Anova(p_movement_glmer)
 ```
@@ -262,6 +265,60 @@ knitr::include_graphics("./Figures/Figure3.png")
 
 As expected, this figures shows that in the plates without inequality, where both compartments are equal, net movement is close to zero. In both other conditions, there is net movement from the rich to the poor compartments. 
 
+# Figure 4 - Fungal benefit received per unit P transferred
+
+We will now try and establish if there is a difference in the ratio of the total hyphal biomass in a compartment (i.e. carbon transferred from host to fungus) to the total amount of QDs in the plant orignating from this compartment (i.e. total phosphorus transfer from the fungus to the host). We analyse the natural log of this ratio, which reflects the benefit fungi receive for a unit of phosphorus they provide. 
+
+## Modelling & Model Assumptions
+
+### Linear Mixed Model
+
+We analyse the phosphorus price using as predictor variables inequality level (three levels) and source compartment wealth (two levels: rich vs poor) nested within inequality. In order to account for non-independence of two compartments sharing a single plate, we analyse a linear mixed model fitting a random intercept per plate. 
+
+```{r,echo=F,warning=F,message=F,out.width = '50%'}
+load("./Models/lme_CPPrice_ineq_comp")
+load("./Models/ineq_comp_price")
+#Visually check if assumptions of the model are met
+plot(lme_CPPrice_ineq_comp)
+qqnorm(lme_CPPrice_ineq_comp$residuals)
+qqline(lme_CPPrice_ineq_comp$residuals)
+```
+
+This model clearly does not meet the assumptions, particularly it has strongly non-normal residuals. We will evaluate a GLMMs instead. 
+
+### GLMMs
+
+We will evaluate a GLMm with a Gamma error distribution and an identity link-function. 
+
+```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
+load("./Models/glmer_CPPrice_ineq_comp")
+plot(glmer_CPPrice_ineq_comp)
+qqnorm(resid(glmer_CPPrice_ineq_comp))
+qqline(resid(glmer_CPPrice_ineq_comp))
+```
+
+Statistical assumptions are much better met in this model, particularly, residuals are now normally distributed. Some minor heteroscedasticity remains, but is unlikely to qualitatively effect our inference if effect sizes are clear. 
+
+## Biological inference
+
+We will consider the parameter estimates and, using a Chi-square test, the statistical signficance of the model fitted above. 
+
+```{r}
+summary(glmer_CPPrice_ineq_comp)
+Anova(glmer_CPPrice_ineq_comp)
+```
+
+The tells us that while inequality level per se is not a signficant factor in determining C/P exchange ratio (X2 = 4.5, df = 2, p = 0.10), within each inequality level, compartment-level wealth is a highly signficant predictor of price (X2 = 87.8, df = 3, p < 0.01). 
+
+This is in line with our expectations: given that at the plate level resource amounts are identical in all treaments, we do not expect an overall plate-level effect of inequality on exchange ratio. However, within an inequality treatment we expect that ratio should differ (strongly) between the two compartments when they have different nutrient contents. Looking at the the effect size, this is precisely what we find, with prices in the poor compartment higher than in the rich compartment and an increasing difference with increasing inequality (last three rows of the Fixed effects).
+
+## Visualisation (Figure 4)
+
+```{r, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("./Figures/Figure4.png")
+```
+
+This figure further confirms our biological inference from the above. C/P exchange rates are higher in the poor compartment than in the rich, but only signficanlty so when there is inequality. 
 
 # Supplementary Materials
 
@@ -269,53 +326,12 @@ We will now briefly consider the various supplementary figures and analyses, aga
 
 Full model diagnostics are evaluated in the R-script (Analyses_Figures.R), we here summarise key resuls and figures. 
 
-## Figure S4 - Relationship between nutrient levels and fungal phosphorus transfer
-
-In an additional experiment, we evaluated the relationship between nutrient levels AM fungi where exposed to and the amount of phosphrus they transfer to the roots of their plant hosts. Thus, in this experiment absolute nutrient levels vary (rather than the distribution of the same amount of nutrients between two compartments), and we expect fungi with access to more resources to transfer more QDs to their hosts. 
-
-### Statistical modelling
-
-We evaluate a linear model of QDs per mg host root, using fungal nutrient level as a continouos predictor variable (comparable to in Figure 2C). 
-
-```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
-load("./Models/lm_QD_per_mg_nut_level_control")
-```
-```{r}
-summary(lm_QD_per_mg_nut_level_control)
-```
-
-As expected, we find a positive slope, indicating that more fungal access to nutrients results in a higher transfer to the roots. 
-
-```{r,warning=FALSE,message=F, out.width = '50%'}
-Anova(lm_QD_per_mg_nut_level_control)
-```
-
-An F-test confirms that this effect is highly significant. 
-
-### Visualisation (Figure S4)
-
-```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S4_Linear.png")
-```
-
-## Figure S5 - AM fungal growth in absence of a plant host
-
-We performed an additional experiment to evaluate AM fungal growth in the absence of a plant host. Since AM fungi are thought to be obligate biotrophs, we expect there to be no growth other than (sometimes) initial spore germination followed by minor (<2 cm) hyphae formation using the carbon stored in the spored.  
-
-We have inoculate spores both on a water medium and on an apatite medium (same as used in the main experiments), in both cases without plant host. We wil visualise the distribution of their growth. 
-
-```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S5Spore_Growth.png")
-```
-
-As expected in the absence of host roots, only a few replicas germinated and all only formed initial exploratory hyphae (max hyphal length 2.2 cm). Specifically, in apatite 12/70 (17.1%) of all replicas showed any growth, and in the water 11/56 (19.6%).
-
-## Figure S6 - In-vitro QD Colour Control
+## Figure S2A - In-vitro QD Colour Control
 
 We performed a in-vitro colour control experiment to verify if QDs from labelled with both colours are taken up by in-vitro plant roots equally well, and to exclude color bias. 
 
 ```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S6_in_vitro_colour.png")
+knitr::include_graphics("./Figures/Figure_S2A_in_vitro_colour.png")
 ```
 
 ```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
@@ -325,107 +341,14 @@ in_vitro_t_test
 
 We find a highly similar uptake of both colours in the root (0.0012 for cyan, 0.0011 for red), and using a paired t-test find no indication of different uptake between the two colours. 
 
-## Figure S7 - Inequality effect on root biomass
-
-We evaluate the effects of resource inquality on root biomass.  
-
-### Visualisation (Figure S7)
-
-```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S7_RootBM.png")
-```
-
-We find only small effects of inequality level on root biomass (no inequality: 67.4 mg, medium: 59.6 mg, high: 66.7 mg). 
-
-### Statistical modelling
-
-We evaluate a linear model, and consider if it meets the assumptions of a linear model, given that we are evaluating proportional data. 
-```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
-load("./Models/lm_total_root_bm_mg_ineq")
-residualPlot(lm_total_root_bm_mg_ineq)
-qqPlot(lm_total_root_bm_mg_ineq)
-```
-
-We find that our linear model shows no sign of heteroscedasciticity or non-normal residual, indicating that for this dataset a linear model is appropriate even despite anayling proportional data. 
-
-```{r}
-summary(lm_total_root_bm_mg_ineq)
-```
-
-As expected, the associated linear model finds only small effects of inequality on root biomass, and no clear directionality. There is a potentially marginally signficant decrease in root biomass in the medium inequality treatment compared to the intercept. We will now evaluate, however, if the overall effect is signicant.  
-
-```{r,warning=FALSE,message=F, out.width = '50%'}
-Anova(lm_total_root_bm_mg_ineq)
-```
-
-We find no evidence for an overal signficant effect of inequality on root biomass. 
-
-## Figure S8 - Inequality effect on mycorrhizal root colonisation
-
-We evaluate the effects of resource inquality on AM fungal colonisation of plant roots by visually scoring colonisation percentages. 
-
-### Visualisation (Figure S8)
-
-```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S8_root_colonisation.png")
-```
-
-We find only small effects of inequality level on the colonisation percentage (no inequality: 69.9%, medium: 66.6%, high: 73.4%). 
-
-### Statistical modelling
-
-```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
-load("./Models/lm_colon")
-```
-```{r}
-summary(lm_colon)
-```
-
-This linear model estimates a colonisation percentage of ~70% in the absence of inequality, with minor and non-directional effects of increasing inequality on colonisation (medium 3.25% decrease, high inequality 3.9% increase). 
-
-```{r,warning=FALSE,message=F, out.width = '50%'}
-Anova(lm_colon)
-```
-
-In line with the above parameter estimates, we find no indication of a signficant effect of inequality level on colonisation percentage. 
-
-## Figure S9 - Inequality effect on total fungal biomass
-
-We evaluate the effects of resource inquality on total AM fungal biomass.  
-
-### Visualisation (Figure S9)
-
-```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/Figure_S9_OverallHyphalBM.png")
-```
-
-We find only small effects of inequality level on fungal biomass (no inequality: 1.30 mg, medium: 1.13 mg, high: 1.26 mg). 
-
-### Statistical modelling
-
-```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
-load("./Models/glm_plate_bm_gamma_identity")
-```
-```{r}
-summary(glm_plate_bm_gamma_identity)
-```
-
-As expected from the above figure, the associated generalised linear model finds only small effects of inequality on fungal biomass, and no clear directionality. There is a potentially marginally signficant decrease in root biomass in the medium inequality treatment compared to the intercept. We will now evaluate if the overall effect is significant using an F-test.  
-
-```{r,warning=FALSE,message=F, out.width = '50%'}
-Anova(glm_plate_bm_gamma_identity,test.statistic = "F")
-```
-
-We find no evidence for an overal signficant effect of inequality on total fungal biomass. 
-
-## Figure S15 - Whole Plant Analysis - Colour Uptake
+## Figure S2B - Whole Plant Analysis - Colour Uptake
 
 We grew whole plants in substrates containing equal amouns of QDs in the same two colours studied in the main experiment. This allows us to verify if in the same plant, both colours are taken up by the plants equally efficiently. 
 
-### Visualisation (Figure S15)
+### Visualisation (Figure S2B)
 
 ```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/FigS15_WholePlantEqualColours.png")
+knitr::include_graphics("./Figures/FigS2B_WholePlantEqualColours.png")
 ```
 
 In line with our previously found results (e.g Figure 2A, Table S1), we see there are only small differences in QD transfer between red (mean = 0.56 nmol QD per plant) and cyan (0.62 nmol).
@@ -441,14 +364,14 @@ whole_plant_5050_colour_t_test
 
 We find no indication of an effect of QD-colour on uptake in the plant. 
 
-## Figure S16 - Whole Plant Analysis - Colour Switching
+## Figure S2C - Whole Plant Analysis - Colour Switching
 
 We also grew plants inoculated with mycorrhizal fungi in substrates with unequal amounts of QDs from both colours, specifically in a 10:90 ration, mimicking the high inequality treatment in the main text. For half of the twelve plants we grew this way, we switched the colours compared to the other half. In other words, the high resource treatment was represented by red in half of our plants, but by cyan in the other half. This allows us to independently estimate the effect of inequality and colouring, and verify if the colour of a QD label has an effect on its uptake.
 
-### Visualisation (Figure S16)
+### Visualisation (Figure S2C)
 
 ```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/FigS16_WholePlantColourSwitch.png")
+knitr::include_graphics("./Figures/FigS2C_WholePlantColourSwitch.png")
 ```
 
 As expected, we find that QDs from the wealthy source compartment (90) are more abundantly found within the whole plant. Visually, there appears to not be a clear colour-effect, however. 
@@ -472,14 +395,14 @@ Anova(glmer_col_switch)
 
 A Chi-Square test reveals that indeed, we find no indication of a signficant colour effect. 
 
-## Figure S17 - Toxicity of QDs to plants
+## Figure S2D - Toxicity of QDs to plants
 
 We evaluate potential for QDs to have toxic effects on plants by comparing plant growth in regular apatite, compared to QD-linked apatite.   
 
-### Visualisation (Figure S19)
+### Visualisation (Figure S2D)
 
 ```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("./Figures/FigS17_WholePlantToxicity.png")
+knitr::include_graphics("./Figures/FigS2D_WholePlantToxicity.png")
 ```
 
 Visually, plant growth seems virtually identical in both treatments. 
@@ -495,3 +418,120 @@ Anova(lm_tox)
 ```
 
 In line with this, our linear model finds no evidence for an effect of apatite type on plant growth, with only a very minor effect size. 
+
+## Figure S3A - Inequality effect on root biomass
+
+We evaluate the effects of resource inquality on root biomass.  
+
+### Visualisation (Figure S3A)
+
+```{r, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("./Figures/Figure_S3A_RootBM.png")
+```
+
+We find only small effects of inequality level on root biomass (no inequality: 67.4 mg, medium: 59.6 mg, high: 66.7 mg). 
+
+### Statistical modelling
+
+```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
+load("./Models/lm_total_root_bm_mg_ineq")
+```
+```{r}
+summary(lm_total_root_bm_mg_ineq)
+```
+
+As expected from the above figure, the associated linear model finds only small effects of inequality on root biomass, and no clear directionality. There is a potentially marginally signficant decrease in root biomass in the medium inequality treatment compared to the intercept. We will now evaluate, however, if the overall effect is signicant.  
+
+```{r,warning=FALSE,message=F, out.width = '50%'}
+Anova(lm_total_root_bm_mg_ineq)
+```
+
+We find no evidence for an overal signficant effect of inequality on root biomass. 
+
+## Figure S3B - Inequality effect on mycorrhizal root colonisation
+
+We evaluate the effects of resource inquality on AM fungal colonisation of plant roots by visually scoring colonisation percentages. 
+
+### Visualisation (Figure S3B)
+
+```{r, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("./Figures/Figure_S3B_root_colonisation.png")
+```
+
+We find only small effects of inequality level on the colonisation percentage (no inequality: 69.9%, medium: 66.6%, high: 73.4%). 
+
+### Statistical modelling
+
+```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
+load("./Models/lm_colon")
+```
+```{r}
+summary(lm_colon)
+```
+
+This linear model estimates a colonisation percentage of ~70% in the absence of inequality, with minor and non-directional effects of increasing inequality on colonisation (medium 3.25% decrease, high inequality 3.9% increase). 
+
+```{r,warning=FALSE,message=F, out.width = '50%'}
+Anova(lm_colon)
+```
+
+In line with the above parameter estimates, we find no indication of a signficant effect of inequality level on colonisation percentage. 
+
+## Figure S3C - Inequality effect on total fungal biomass
+
+We evaluate the effects of resource inquality on total AM fungal biomass.  
+
+### Visualisation (Figure S3C)
+
+```{r, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("./Figures/Figure_S3C_OverallHyphalBM.png")
+```
+
+We find only small effects of inequality level on fungal biomass (no inequality: 1.30 mg, medium: 1.13 mg, high: 1.26 mg). 
+
+### Statistical modelling
+
+```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
+load("./Models/glm_plate_bm_gamma_identity")
+```
+```{r}
+summary(glm_plate_bm_gamma_identity)
+```
+
+As expected from the above figure, the associated generalised linear model finds only small effects of inequality on fungal biomass, and no clear directionality. There is a potentially marginally signficant decrease in root biomass in the medium inequality treatment compared to the intercept. We will now evaluate if the overall effect is significant using an F-test.  
+
+```{r,warning=FALSE,message=F, out.width = '50%'}
+Anova(glm_plate_bm_gamma_identity,test.statistic = "F")
+```
+
+We find no evidence for an overal signficant effect of inequality on total fungal biomass. 
+
+## Figure S3D - Relationship between nutrient levels and fungal phosphorus transfer
+
+In an additional experiment, we evaluated the relationship between nutrient levels AM fungi where exposed to and the amount of phosphrus they transfer to the roots of their plant hosts. Thus, in this experiment absolute nutrient levels vary (rather than the distribution of the same amount of nutrients between two compartments), and we expect fungi with access to more resources to transfer more QDs to their hosts. 
+
+### Statistical modelling
+
+We evaluate a linear model of QDs per mg host root, using fungal nutrient level as a continouos predictor variable (comparable to in Figure 2C). 
+
+```{r,echo=F,warning=FALSE,message=F, out.width = '50%'}
+load("./Models/lm_QD_per_mg_discon")
+```
+```{r}
+summary(lm_QD_per_mg_discon)
+```
+
+As expected, we find a positive slope, indicating that more fungal access to nutrients results in a higher transfer to the roots. 
+
+```{r,warning=FALSE,message=F, out.width = '50%'}
+Anova(lm_QD_per_mg_discon)
+```
+
+An F-test confirms that this effect is highly significant. 
+
+### Visualisation (Figure S3D)
+
+```{r, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("./Figures/Figure_S3D_Linear.png")
+```
+
