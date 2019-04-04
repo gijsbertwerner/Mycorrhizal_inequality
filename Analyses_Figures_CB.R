@@ -1,11 +1,11 @@
 #Mycorrhizal Inequality Paper - Data Analysis
-#(C) Gijsbert Werner, Department of Zoology, University of Oxford, gijsbert.werner@zoo.ox.ac.uk
-#November 2018
+#(C) Gijsbert Werner, Department of Zoology & Balliol College, University of Oxford, gijsbert.werner@balliol.ox.ac.uk
+#February 2019
 
-##This script performs all the statistical analyses presented in Whiteside et al. 2018 and generates all its figures.
+##This script performs all the statistical analyses presented in Whiteside et al. 2019 and generates all its figures.
 ##Please make sure that data files are in the same relative paths as here, or change paths to where you have saved them.
 
-##Running the associated Markdown-script Analyses_Figures_Report_V2.Rmd produces a markdown report of all our results. 
+##Running the associated Markdown-script Analyses_Figures_Report.Rmd produces a markdown report of all our results. 
 ##This script was executed in R 3.4.4.
 
 # Load Packages  -------------------------------------------------------
@@ -25,32 +25,28 @@ dir.create("./Figures")
 
 # Load Data ---------------------------------------------------------------
 
-ineq<-read.csv("./Data/Ineq_full_fungal_experimental_data.csv",as.is = T)
+ineq<-read.csv("../Data/Ineq_full_fungal_experimental_data.csv",as.is = T)
 head(ineq)
 lapply(ineq,class)
 ineq$ineq_treatment<-factor(ineq$ineq_treatment,levels = c("None","Medium","High"))
 
-ineq_nut_level_control<-read.csv("./Data/Ineq_nut_level_control_experimental_data.csv",as.is=T)
+ineq_nut_level_control<-read.csv("../Data/Ineq_nut_level_control_experimental_data.csv",as.is=T)
 head(ineq_nut_level_control)
 lapply(ineq_nut_level_control,class)
 
-spore_growth<-read.csv("./Data/Spore_growth_data.csv")
-head(spore_growth)
-lapply(spore_growth,class)
-
-in_vitro_dat<-read.csv("./Data/In_vitro_colour_control_data.csv",as.is=T)
+in_vitro_dat<-read.csv("../Data/In_vitro_colour_control_data.csv",as.is=T)
 head(in_vitro_dat)
 lapply(in_vitro_dat,class)
 
-colon<-read.csv("./Data/Colonisation_Data.csv",as.is=T)
+colon<-read.csv("../Data/Colonisation_Data.csv",as.is=T)
 head(colon)
 lapply(colon,class)
 
-whole_plant_dat<-read.csv("./Data/Whole_plant_data.csv",as.is=T)
+whole_plant_dat<-read.csv("../Data/Whole_plant_data.csv",as.is=T)
 head(whole_plant_dat)
 lapply(whole_plant_dat,class)
 
-tox_dat<-read.csv("./Data/Toxicity_data.csv",as.is=T)
+tox_dat<-read.csv("../Data/Toxicity_data.csv",as.is=T)
 head(tox_dat)
 lapply(tox_dat,class)
 
@@ -141,8 +137,7 @@ Fig2a<-ggplot()+
   labs(x="Level of Inequality",y="P transfer to roots (nmol QD-apatite per mg root)")+
   #scale_y_continuous(limits = c(0,0.08),breaks = seq(from=0.01,to=0.07,by=0.01),labels = c("","0.02","","0.04","","0.06",""))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
-        axis.line = element_line(colour="black"))+
-  geom_text(aes(x=3,y=0.0012,label="*",size=30))
+        axis.line = element_line(colour="black"))
 Fig2a
 
 png("./Figures/Figure2a.png",res = 300,width = 5,height = 5,units = "in")
@@ -165,7 +160,6 @@ t.test(ineq_root_comp %>% filter(ineq_treatment=="None") %>% select(perc_poor_or
 
 #Save the analysed data frame
 save(ineq_root_comp,file="./Models/ineq_root_comp")
-
 
 # Figure 2B ---------------------------------------------------------------
 
@@ -298,9 +292,7 @@ Figure2B<-ggplot()+
   scale_y_continuous(breaks = seq(from=0.01,to=0.12,by=0.01),labels = c("","0.02","","0.04","","0.06","","0.08","","0.10","","0.12"))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
         axis.line = element_line(colour="black"))+
-  guides(fill=guide_legend(reverse=TRUE),colour=guide_legend(reverse=TRUE))+
-  geom_text(aes(x=2,y=0.1,label="*",size=30))+
-  geom_text(aes(x=3,y=0.03,label="***",size=30))
+  guides(fill=guide_legend(reverse=TRUE),colour=guide_legend(reverse=TRUE))
 Figure2B
 
 #Figure 2B plot
@@ -420,11 +412,7 @@ Fig2a_legendless<-ggplot()+
   #scale_y_continuous(limits = c(0,0.08),breaks = seq(from=0.01,to=0.07,by=0.01),labels = c("","0.02","","0.04","","0.06",""))+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
         axis.line = element_line(colour="black"))+
-  theme(legend.position="none")+  
-  geom_text(aes(x=3,y=0.0012,label="*",size=30))
-Fig2a
-
-
+  theme(legend.position="none")
 Fig2a_legendless
 
 Figure2B_legendless<-ggplot()+
@@ -441,9 +429,7 @@ Figure2B_legendless<-ggplot()+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
         axis.line = element_line(colour="black"))+
   guides(fill=guide_legend(reverse=TRUE),colour=guide_legend(reverse=TRUE))+
-  theme(legend.position="none")+
-  geom_text(aes(x=2,y=0.1,label="*",size=30))+
-  geom_text(aes(x=3,y=0.03,label="***",size=30))
+  theme(legend.position="none")
 Figure2B_legendless
 
 #Print the joint figure
@@ -451,7 +437,6 @@ pdf("./Figures/Figure2_AllPanels_Horizontal.pdf",width = 15,height = 5)
 grid.arrange(Fig2a_legendless,Figure2B_legendless,Figure2c,nrow=1,widths=c(1,1,1))
 dev.off()
 #Using Illustrator, manually add the legend to the open white space in Figure 2B
-
 
 # pdf("./Figures/ForLegendOnly.pdf")
 # Figure2B
@@ -491,7 +476,7 @@ head(ineq_P_origin_melted)
 #Evaluate a generalised linear mixed model. 
 p_movement_glmer<-
   glmer(P_transfer~ineq_treatment*direction+(1|plate),
-    data=ineq_P_origin_melted,family = gaussian(link="log"))
+        data=ineq_P_origin_melted,family = gaussian(link="log"))
 
 #Are the assumptions met? 
 plot(p_movement_glmer)
@@ -503,6 +488,7 @@ summary(p_movement_glmer)
 Anova(p_movement_glmer)
 save(p_movement_glmer,file="./Models/p_movement_glmer")
 save(ineq_P_origin_melted,file="./Models/ineq_P_origin_melted")
+
 
 ##Figure
 
@@ -556,87 +542,95 @@ Figure3
 dev.off()
 
 #Save the test results and data analysed
-save(kruskal_non_origin_P_net_movement,file="./Models/kruskal_non_origin_P_net_movement")
 save(ineq_P_origin,file="./Models/ineq_P_origin")
+
+# Figure 4 ---------------------------------------------------------------
+
+#Are there difference in exchange rate between compartments and inequality treatments. 
+#This is a compartment level question, nested within plates. 
+
+#Data formatting
+head(ineq)
+#In order to calculate the exchange rate we take the log of the total amount of hyphal biomass in the hyphal compartment (C transfer) to P from that compartment taken up in the root (P transfer)
+#THe former is in the relevant hyphal compartment, the latter in two different variables in the root compartment row. 
+
+ineq_comp_price<-ineq %>% mutate(root_QD_root_rich_origin=root_QD_per_mg_root_rich_origin*total_root_bm_mg,
+                                 root_QD_root_poor_origin=root_QD_per_mg_root_poor_origin*total_root_bm_mg) %>%
+  group_by(plate) %>% 
+  summarise(rich_comp_price=log(hyphal_bm_mg[comp=="Rich"]/root_QD_root_rich_origin[comp=="Root"]),
+            poor_comp_price=log(hyphal_bm_mg[comp=="Poor"]/root_QD_root_poor_origin[comp=="Root"]),
+            ineq_treatment=ineq_treatment[comp=="Root"]) %>%
+  melt(id.vars=c("plate","ineq_treatment"),variable.name="wealth",value.name = "CPlog")
+ineq_comp_price<-ineq_comp_price  %>% filter(!is.infinite(CPlog))
+head(ineq_comp_price)
+
+##Descriptives
+ggstripchart(ineq_comp_price,x = "ineq_treatment",y = "CPlog",
+             add=c("mean_se","violin"),color="wealth") 
+
+#Statistical Modelling 
+
+#Evaluate a linear mixed model
+lme_CPPrice_ineq_comp<-lme(CPlog~ineq_treatment/wealth,~1|plate,
+                                         data=ineq_comp_price,
+                                         na.action = "na.omit")
+#Save the model
+save(lme_CPPrice_ineq_comp,file="./Models/lme_CPPrice_ineq_comp")
+#Visually check if assumptions of the model are met
+plot(lme_CPPrice_ineq_comp)
+qqnorm(lme_CPPrice_ineq_comp$residuals)
+qqline(lme_CPPrice_ineq_comp$residuals)
+#Assumptions are not at all met
+
+#Evaluate a generalised linear mixed model, explore Gamma model with identity-link function
+glmer_CPPrice_ineq_comp<-glmer(CPlog~ineq_treatment/wealth+(1|plate),
+                           data=ineq_comp_price,family=Gamma(link = "identity"),
+                           na.action = "na.omit")
+save(glmer_CPPrice_ineq_comp,file="./Models/glmer_CPPrice_ineq_comp")
+plot(glmer_CPPrice_ineq_comp)
+qqnorm(resid(glmer_CPPrice_ineq_comp))
+qqline(resid(glmer_CPPrice_ineq_comp))
+
+#What does the model tell us? 
+summary(glmer_CPPrice_ineq_comp)
+Anova(glmer_CPPrice_ineq_comp)
+
+## Visualisation
+
+ineq_comp_price_stats<- ineq_comp_price %>% group_by(ineq_treatment,wealth) %>%
+  summarise(mean_price=mean(CPlog,na.rm = T),
+            se_price=stderr(CPlog))
+ineq_comp_price_stats
+ineq_comp_price_stats$wealth <- c(rep(c("Rich","Poor"),3))
+    
+#Plot Figure
+Fig4 <- ineq_comp_price_stats %>% ggplot()+
+  geom_col(aes(x=ineq_treatment,y=mean_price,fill=wealth),position="dodge")+
+  geom_errorbar(aes(x=ineq_treatment,ymin=mean_price-se_price,
+                    ymax=mean_price+se_price,group=wealth),
+                position=position_dodge(width=0.9),
+                width=0.25)+
+  ylab("Exchange Rate (log [C biomass / P transferred] )")+
+  xlab("Levels of Inequality")+
+  scale_y_continuous(breaks = seq(from=0.5,to=4.5,by=0.5),labels = c("","1","","2","","3","","4",""))+
+  scale_x_discrete(labels=c("None","Medium","High"))+
+  scale_fill_discrete(name="Nutrient\nCompartment")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
+        axis.line = element_line(colour="black"))+
+  geom_text(aes(x = 3,y=3.9,label="***"))+
+  geom_text(aes(x = 2,y=3.4,label="***"))+
+  geom_text(aes(x = 1,y=3.2,label="NS"))
+Fig4
+
+png("./Figures/Figure4.png",res = 300,width = 5,height = 5,units = "in")
+Fig4
+dev.off()
+
+save(ineq_comp_price,file="./Models/ineq_comp_price")
 
 # SOM ---------------------------------------------------------------------
 
-#######S4 Linear 
-
-##Data formatting
-head(ineq_nut_level_control)
-
-#Descriptives
-ggstripchart(ineq_nut_level_control,x = "comp_nutrients",
-             y = c("root_QD_per_mg_root"),
-             add="mean_se",ylab="P transfer to roots (nmol/mg)",combine=T)
-
-##Model building
-lm_QD_per_mg_nut_level_control<-lm(root_QD_per_mg_root~comp_nutrients,
-                        data=ineq_nut_level_control)
-residualPlot(lm_QD_per_mg_nut_level_control)
-qqPlot(lm_QD_per_mg_nut_level_control)
-#This isn't perfect, but looks reasonable. If the p-values are convincing, probably the departure from normality won't be too influential. 
-
-#Save the model
-save(lm_QD_per_mg_nut_level_control,file="./Models/lm_QD_per_mg_nut_level_control")
-
-#What does it tell us?
-summary(lm_QD_per_mg_nut_level_control)
-Anova(lm_QD_per_mg_nut_level_control)
-
-##Visualisation
-ineq_nut_level_control_fig<-ineq_nut_level_control %>% group_by(comp_nutrients) %>% 
-  summarise(mean_root_QD_per_mg_root=mean(root_QD_per_mg_root,na.rm = T),
-            se_root=stderr(root_QD_per_mg_root))
-
-Figure_S4Linear<-ggplot()+
-  geom_pointrange(aes(x=comp_nutrients,ymin=mean_root_QD_per_mg_root-se_root,ymax=mean_root_QD_per_mg_root+se_root,
-                      y=mean_root_QD_per_mg_root),
-                  data=ineq_nut_level_control_fig,size=0.5)+
-  geom_abline(intercept = 2.735853e-04,slope=3.447013e-06)+
-  scale_y_continuous(limits = c(0,0.001))+
-  xlab("Nutrient Compartment")+
-  ylab("P transfer to roots (nmol QD-apatite per mg root)")+
-  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
-        axis.line = element_line(colour="black"))+
-  scale_x_continuous(breaks=c(10,30,50,70,90))
-Figure_S4Linear
-
-png("./Figures/Figure_S4_Linear.png",res = 300,width = 5,height = 5,units = "in")
-Figure_S4Linear
-dev.off()
-
-save(ineq_nut_level_control,file="./Models/ineq_nut_level_control")
-
-#######S5 Spore Growth
-head(spore_growth)
-
-#Descriptives
-ggstripchart(spore_growth,x = "Treatment",
-             y = c("Total.Growth"),
-             add=c("mean_se","violin"),ylab="Spore Growth (cm)",combine=T)
-
-#Print this figure, no formal statistical modelling is needed here. 
-png("./Figures/Figure_S5Spore_Growth.png",res = 300,width = 5,height = 5,units = "in")
-ggstripchart(spore_growth,x = "Treatment",
-             y = c("Total.Growth"),
-             add=c("mean_se","violin"),ylab="Hyphal Growth (cm)",combine=T)
-dev.off()
-
-#How many have grown at all, or more than 1 cm? 
-spore_growth$grown<-ifelse(spore_growth$Total.Growth>0,1,0)
-spore_growth$grown_more_1<-ifelse(spore_growth$Total.Growth>1,1,0)
-
-table(spore_growth$Treatment,spore_growth$grown)
-table(spore_growth$Treatment,spore_growth$grown_more_1)
-
-#What is the longest growth? 
-max(spore_growth$Total.Growth)
-
-save(spore_growth,file="./Models/spore_growth")
-
-########S6 In-Vitro Colour Control
+########S2A In-Vitro Colour Control
 
 head(in_vitro_dat)
 
@@ -663,7 +657,7 @@ in_vitro_dat_melt_fig$colour_tested<-c("488nm (cyan)","666nm (red)")
 in_vitro_dat_melt_fig$colour_tested<-factor(in_vitro_dat_melt_fig$colour_tested,levels=c("666nm (red)","488nm (cyan)"))
 head(in_vitro_dat_melt_fig)
 
-FigS6_in_vitro<-ggplot()+
+FigS2A_in_vitro<-ggplot()+
   geom_col(aes(x=colour_tested,y=mean_QD_per_mg_root,fill=colour_tested),
            data=in_vitro_dat_melt_fig,
            position = position_stack(reverse = F))+
@@ -672,157 +666,17 @@ FigS6_in_vitro<-ggplot()+
   labs(x="Colour",y="P transfer to roots (nmol QD-apatite per mg root)")+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
         axis.line = element_line(colour="black"))
-FigS6_in_vitro
+FigS2A_in_vitro
 
-png("./Figures/Figure_S6_in_vitro_colour.png",res = 300,width = 5,height = 5,units = "in")
-FigS6_in_vitro
+png("./Figures/Figure_S2A_in_vitro_colour.png",res = 300,width = 5,height = 5,units = "in")
+FigS2A_in_vitro
 dev.off()
 
-########S7 Root Biomass
-
-#We reuse the plate-level data frame from above
-
-#Descriptives
-ggstripchart(ineq_root_comp,x="ineq_treatment",
-             y=c("total_root_bm_mg"),
-             add=c("mean_se","violin"),ylab = "Root biomass (mg)",combine=T)
-
-##Statistical Modelling
-lm_total_root_bm_mg_ineq<-lm(total_root_bm_mg~ineq_treatment,data=ineq_root_comp)
-
-#Visually check if model assumptions are met
-residualPlot(lm_total_root_bm_mg_ineq)
-qqPlot(lm_total_root_bm_mg_ineq)
-
-#What does the model tell us? 
-summary(lm_total_root_bm_mg_ineq)
-Anova(lm_total_root_bm_mg_ineq)
-
-##Figure
-FigS7_Root_BM<-
-  ineq_root_comp %>% group_by(ineq_treatment) %>%
-  summarise(mean_total_root_bm_mg=mean(total_root_bm_mg,na.rm = T),
-            se_total_root_bm_mg=stderr(total_root_bm_mg)) %>%
-  ggplot()+
-  geom_col(aes(x=ineq_treatment,y=mean_total_root_bm_mg))+
-  geom_errorbar(aes(x=ineq_treatment,ymin=mean_total_root_bm_mg-se_total_root_bm_mg,ymax=mean_total_root_bm_mg+se_total_root_bm_mg),width=0.25)+
-  labs(x="Level of Inequality",y="Root biomass (mg)")+
-  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
-        axis.line = element_line(colour="black"))
-FigS7_Root_BM
-
-png("./Figures/Figure_S7_RootBM.png",res = 300,width = 5,height = 5,units = "in")
-FigS7_Root_BM
+pdf("./Figures/Figure_S2A_in_vitro_colour.pdf")
+FigS2A_in_vitro
 dev.off()
 
-#Save the model
-save(lm_total_root_bm_mg_ineq,file="./Models/lm_total_root_bm_mg_ineq")
-
-##########S8 Colonisation
-
-#Data formatting
-colon$ineq_treatment<-factor(colon$ineq_treatment,levels = c("None","Medium","High"))
-
-#Descriptives. 
-ggstripchart(data = colon,x="ineq_treatment",y="perc_colonised",
-             add = "mean_se",color = "ineq_treatment")
-
-#Analyses
-lm_colon<-lm(perc_colonised~ineq_treatment,data=colon)
-
-#Visually check if model assumptions are met
-residualPlot(lm_colon)
-qqPlot(lm_colon)
-#Not perfect, but reasonable enough given the small sample size. 
-
-#Wht does the model tell us? 
-summary(lm_colon)
-Anova(lm_colon)
-
-#Alternatively, with a glm.
-glm_colon<-glm((perc_colonised/100)~ineq_treatment,family = "binomial",data=colon)
-summary(glm_colon)
-Anova(glm_colon)
-
-#Figure
-FigS8_colon<-
-  colon %>% group_by(ineq_treatment) %>%
-  summarise(mean_perc_colon=mean(perc_colonised),
-            se_perc_colon=stderr(perc_colonised)) %>%
-  ggplot()+
-  geom_col(aes(x=ineq_treatment,y=mean_perc_colon))+
-  geom_errorbar(aes(x=ineq_treatment,ymin=mean_perc_colon-se_perc_colon,
-                    ymax=mean_perc_colon+se_perc_colon),width=0.25)+
-  labs(x="Level of Inequality",y="Mycorrhizal Colonisation (%)")+
-  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
-        axis.line = element_line(colour="black"))
-FigS8_colon
-
-png("./Figures/Figure_S8_root_colonisation.png",res = 300,width = 5,height = 5,units = "in")
-FigS8_colon
-dev.off()
-
-#Save the model and data frame
-save(lm_colon,file="./Models/lm_colon")
-save(colon,file="./Models/colon")
-
-########### S9 Hyphal Biomass Overall
-
-#We are here evaluating the full hyphal biomass per plate, across all compartments. 
-#Calculate the plate level fungal biomass
-ineq_hypal_bm<-ineq %>% group_by(plate) %>%
-  summarise(plate_hyphal_bm=sum(hyphal_bm_mg),
-            ineq_treatment=ineq_treatment[comp=="Poor"])
-ineq_hypal_bm
-
-#Descriptives. 
-ggstripchart(data = ineq_hypal_bm,x="ineq_treatment",y="plate_hyphal_bm",
-             add = "mean_se",color = "ineq_treatment")
-
-#Modelling
-lm_plate_bm<-lm(plate_hyphal_bm~ineq_treatment,data=ineq_hypal_bm)
-save(lm_plate_bm,file="./Models/lm_plate_bm")
-
-#Visually check if model assumptions are met
-residualPlot(lm_plate_bm)
-qqPlot(lm_plate_bm)
-#Not good, evaluate a GLM
-
-#GLM
-glm_plate_bm_gamma_identity<-glm(plate_hyphal_bm~ineq_treatment,data=ineq_hypal_bm,family = Gamma(link = "identity"))
-save(glm_plate_bm_gamma_identity,file="./Models/glm_plate_bm_gamma_identity")
-#Visually evaluate the model assumptions
-glm.diag.plots(glm_plate_bm_gamma_identity)
-
-#What does the model tell us? 
-summary(glm_plate_bm_gamma_identity)
-Anova(glm_plate_bm_gamma_identity,test.statistic ="F")
-
-#Visualise it
-ineq_hypal_bm_stats <- ineq_hypal_bm %>% group_by(ineq_treatment) %>%
-  summarise(mean_biomass=mean(plate_hyphal_bm,na.rm=T),
-            se_biomass=stderr(plate_hyphal_bm))
-ineq_hypal_bm_stats
-
-FigureS9_hyphal_bm_overall<-ggplot()+
-  geom_col(aes(x=ineq_treatment,y=mean_biomass),
-           data=ineq_hypal_bm_stats)+
-  geom_errorbar(aes(x=ineq_treatment,ymin=mean_biomass-se_biomass,ymax=mean_biomass+se_biomass),
-                data=ineq_hypal_bm_stats,
-                width=0.25)+
-  ylab("Total fungal biomass (mg)")+
-  xlab("Levels of Inequality")+
-  theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  scale_x_discrete(labels=c("None","Medium","High"))
-FigureS9_hyphal_bm_overall
-
-png("./Figures/Figure_S9_OverallHyphalBM.png",res = 300,width = 5,height = 5,units = "in")
-FigureS9_hyphal_bm_overall
-dev.off()
-
-save(ineq_hypal_bm,file="./Models/ineq_hyphal_bm")
-
-########S15 Whole Plant Colour Test
+########S2B Whole Plant Colour Test
 
 #Data formatting
 head(whole_plant_dat)
@@ -854,7 +708,7 @@ whole_plant_5050_colour_t_test
 save(whole_plant_5050_colour_t_test,file="./Models/whole_plant_5050_colour_t_test")
 
 #Visualisation
-FigS15_Colours<-whole_plant_equal_dat %>%  
+FigS2B_Colours<-whole_plant_equal_dat %>%  
   group_by(QD_treatment) %>%
   summarise(mean_QDs=mean(QD_total_plant),
             se_QDs=stderr(QD_total_plant)) %>%
@@ -866,14 +720,17 @@ FigS15_Colours<-whole_plant_equal_dat %>%
   xlab("Inoculation")+
   theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),legend.position = "none")+
   scale_x_discrete(labels=c("666nm (Red)","488nm (Cyan)"))
-FigS15_Colours
+FigS2B_Colours
 
-png("./Figures/FigS15_WholePlantEqualColours.png",res = 300,width = 5,height = 5,units = "in")
-FigS15_Colours
+png("./Figures/FigS2B_WholePlantEqualColours.png",res = 300,width = 5,height = 5,units = "in")
+FigS2B_Colours
 dev.off()
 
+pdf("./Figures/FigS2B_WholePlantEqualColours.pdf")
+FigS2B_Colours
+dev.off()
 
-#########S16 Colours switch
+#########S2C Colours switch
 
 ##Data Formatting
 #Subset to only the unequal treatment and the mycorrhizal plants. 
@@ -916,7 +773,7 @@ whole_plant_colour_switch_uneq_M_figstats<-whole_plant_colour_switch_uneq_M %>% 
             se_QD_total_whole_plant=stderr(QD_total_plant))
 whole_plant_colour_switch_uneq_M_figstats$QD_treatment<-factor(whole_plant_colour_switch_uneq_M_figstats$QD_treatment,c("666nm","488nm"))
 
-FigS16_ColourSwitch<-
+FigS2C_ColourSwitch<-
   whole_plant_colour_switch_uneq_M_figstats %>% ggplot()+
   geom_col(aes(x=comp,y=mean_QD_total_whole_plant,fill=QD_treatment),position="dodge")+
   geom_errorbar(aes(x=comp,
@@ -929,15 +786,19 @@ FigS16_ColourSwitch<-
   scale_fill_discrete(name="Colour\nQD-label")+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
         axis.line = element_line(colour="black"))
-FigS16_ColourSwitch
+FigS2C_ColourSwitch
 
-png("./Figures/FigS16_WholePlantColourSwitch.png",res = 300,width = 5,height = 5,units = "in")
-FigS16_ColourSwitch
+png("./Figures/FigS2C_WholePlantColourSwitch.png",res = 300,width = 5,height = 5,units = "in")
+FigS2C_ColourSwitch
+dev.off()
+
+pdf("./Figures/FigS2C_WholePlantColourSwitch.pdf")
+FigS2C_ColourSwitch
 dev.off()
 
 save(whole_plant_colour_switch_uneq_M,file="./Models/whole_plant_colour_switch_uneq_M")
 
-###### S17 Toxicity Data 
+###### S2D Toxicity Data 
 
 head(tox_dat)
 
@@ -974,7 +835,7 @@ tox_dat_figdata <- tox_dat %>%
 tox_dat_figdata
 
 #Plot the figure
-FigureS17_tox<-ggplot()+
+FigureS2D_tox<-ggplot()+
   geom_col(aes(x=p_source,y=mean_full_plant_mass_g),
            data=tox_dat_figdata)+
   geom_errorbar(aes(x=p_source,ymin=mean_full_plant_mass_g-se_full_plant_mass_g,ymax=mean_full_plant_mass_g+se_full_plant_mass_g),
@@ -984,12 +845,218 @@ FigureS17_tox<-ggplot()+
   xlab("Phosphorus source")+
   theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   scale_x_discrete(labels=c("Apatite","QD-Apatite"))
-FigureS17_tox
+FigureS2D_tox
 
-png("./Figures/FigS17_WholePlantToxicity.png",res = 300,width = 5,height = 5,units = "in")
-FigureS17_tox
+png("./Figures/FigS2D_WholePlantToxicity.png",res = 300,width = 5,height = 5,units = "in")
+FigureS2D_tox
+dev.off()
+
+pdf("./Figures/FigS2D_WholePlantToxicity.pdf")
+FigureS2D_tox
 dev.off()
 
 save(tox_dat,file="./Models/tox_dat")
 
+########S3A Root Biomass
+
+#We reuse the plate-level data frame from above
+
+#Descriptives
+ggstripchart(ineq_root_comp,x="ineq_treatment",
+             y=c("total_root_bm_mg"),
+             add=c("mean_se","violin"),ylab = "Root biomass (mg)",combine=T)
+
+##Statistical Modelling
+lm_total_root_bm_mg_ineq<-lm(total_root_bm_mg~ineq_treatment,data=ineq_root_comp)
+
+#Visually check if model assumptions are met
+residualPlot(lm_total_root_bm_mg_ineq)
+qqPlot(lm_total_root_bm_mg_ineq)
+
+#What does the model tell us? 
+summary(lm_total_root_bm_mg_ineq)
+Anova(lm_total_root_bm_mg_ineq)
+
+##Figure
+FigS3A_Root_BM<-
+  ineq_root_comp %>% group_by(ineq_treatment) %>%
+  summarise(mean_total_root_bm_mg=mean(total_root_bm_mg,na.rm = T),
+            se_total_root_bm_mg=stderr(total_root_bm_mg)) %>%
+  ggplot()+
+  geom_col(aes(x=ineq_treatment,y=mean_total_root_bm_mg))+
+  geom_errorbar(aes(x=ineq_treatment,ymin=mean_total_root_bm_mg-se_total_root_bm_mg,ymax=mean_total_root_bm_mg+se_total_root_bm_mg),width=0.25)+
+  labs(x="Level of Inequality",y="Root biomass (mg)")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
+        axis.line = element_line(colour="black"))
+FigS3A_Root_BM
+
+png("./Figures/Figure_S3A_RootBM.png",res = 300,width = 5,height = 5,units = "in")
+FigS3A_Root_BM
+dev.off()
+
+pdf("./Figures/Figure_S3A_RootBM.pdf")
+FigS3A_Root_BM
+dev.off()
+
+#Save the model
+save(lm_total_root_bm_mg_ineq,file="./Models/lm_total_root_bm_mg_ineq")
+
+##########S3B Colonisation
+
+#Data formatting
+colon$ineq_treatment<-factor(colon$ineq_treatment,levels = c("None","Medium","High"))
+
+#Descriptives. 
+ggstripchart(data = colon,x="ineq_treatment",y="perc_colonised",
+             add = "mean_se",color = "ineq_treatment")
+
+#Analyses
+lm_colon<-lm(perc_colonised~ineq_treatment,data=colon)
+
+#Visually check if model assumptions are met
+residualPlot(lm_colon)
+qqPlot(lm_colon)
+#Not perfect, but reasonable enough given the small sample size. 
+
+#Wht does the model tell us? 
+summary(lm_colon)
+Anova(lm_colon)
+
+#Figure
+FigS3B_colon<-
+  colon %>% group_by(ineq_treatment) %>%
+  summarise(mean_perc_colon=mean(perc_colonised),
+            se_perc_colon=stderr(perc_colonised)) %>%
+  ggplot()+
+  geom_col(aes(x=ineq_treatment,y=mean_perc_colon))+
+  geom_errorbar(aes(x=ineq_treatment,ymin=mean_perc_colon-se_perc_colon,
+                    ymax=mean_perc_colon+se_perc_colon),width=0.25)+
+  labs(x="Level of Inequality",y="Mycorrhizal Colonisation (%)")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
+        axis.line = element_line(colour="black"))
+FigS3B_colon
+
+png("./Figures/Figure_S3B_root_colonisation.png",res = 300,width = 5,height = 5,units = "in")
+FigS3B_colon
+dev.off()
+
+pdf("./Figures/Figure_S3B_root_colonisation.pdf")
+FigS3B_colon
+dev.off()
+
+#Save the model and data frame
+save(lm_colon,file="./Models/lm_colon")
+save(colon,file="./Models/colon")
+
+########### S3C Hyphal Biomass Overall
+
+#We are here evaluating the full hyphal biomass per plate, across all compartments. 
+#Calculate the plate level fungal biomass
+ineq_hypal_bm<-ineq %>% group_by(plate) %>%
+  summarise(plate_hyphal_bm=sum(hyphal_bm_mg),
+            ineq_treatment=ineq_treatment[comp=="Poor"])
+ineq_hypal_bm
+
+#Descriptives. 
+ggstripchart(data = ineq_hypal_bm,x="ineq_treatment",y="plate_hyphal_bm",
+             add = "mean_se",color = "ineq_treatment")
+
+#Modelling
+lm_plate_bm<-lm(plate_hyphal_bm~ineq_treatment,data=ineq_hypal_bm)
+save(lm_plate_bm,file="./Models/lm_plate_bm")
+
+#Visually check if model assumptions are met
+residualPlot(lm_plate_bm)
+qqPlot(lm_plate_bm)
+#Not good, evaluate a GLM
+
+#GLM
+glm_plate_bm_gamma_identity<-glm(plate_hyphal_bm~ineq_treatment,data=ineq_hypal_bm,family = Gamma(link = "identity"))
+save(glm_plate_bm_gamma_identity,file="./Models/glm_plate_bm_gamma_identity")
+#Visually evaluate the model assumptions
+glm.diag.plots(glm_plate_bm_gamma_identity)
+
+#What does the model tell us? 
+summary(glm_plate_bm_gamma_identity)
+Anova(glm_plate_bm_gamma_identity,test.statistic ="F")
+
+#Visualise it
+ineq_hypal_bm_stats <- ineq_hypal_bm %>% group_by(ineq_treatment) %>%
+  summarise(mean_biomass=mean(plate_hyphal_bm,na.rm=T),
+            se_biomass=stderr(plate_hyphal_bm))
+ineq_hypal_bm_stats
+
+FigureS3C_hyphal_bm_overall<-ggplot()+
+  geom_col(aes(x=ineq_treatment,y=mean_biomass),
+           data=ineq_hypal_bm_stats)+
+  geom_errorbar(aes(x=ineq_treatment,ymin=mean_biomass-se_biomass,ymax=mean_biomass+se_biomass),
+                data=ineq_hypal_bm_stats,
+                width=0.25)+
+  ylab("Total fungal biomass (mg)")+
+  xlab("Levels of Inequality")+
+  theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  scale_x_discrete(labels=c("None","Medium","High"))
+FigureS3C_hyphal_bm_overall
+
+png("./Figures/Figure_S3C_OverallHyphalBM.png",res = 300,width = 5,height = 5,units = "in")
+FigureS3C_hyphal_bm_overall
+dev.off()
+
+pdf("./Figures/Figure_S3C_OverallHyphalBM.pdf")
+FigureS3C_hyphal_bm_overall
+dev.off()
+
+save(ineq_hypal_bm,file="./Models/ineq_hyphal_bm")
+
+#######S3D Linear 
+
+##Data formatting
+head(ineq_nut_level_control)
+
+#Descriptives
+ggstripchart(ineq_nut_level_control,x = "comp_nutrients",
+             y = c("root_QD_per_mg_root"),
+             add="mean_se",ylab="P transfer to roots (nmol/mg)",combine=T)
+
+##Model building
+lm_QD_per_mg_discon<-lm(root_QD_per_mg_root~comp_nutrients,
+                        data=ineq_nut_level_control)
+residualPlot(lm_QD_per_mg_discon)
+qqPlot(lm_QD_per_mg_discon)
+#This isn't perfect, but looks reasonable. If the p-values are convincing, probably the departure from normality won't be too influential. 
+
+#Save the model
+save(lm_QD_per_mg_discon,file="./Models/lm_QD_per_mg_discon")
+
+#What does it tell us?
+summary(lm_QD_per_mg_discon)
+Anova(lm_QD_per_mg_discon)
+
+##Visualisation
+ineq_nut_level_control_fig<-ineq_nut_level_control %>% group_by(comp_nutrients) %>% 
+  summarise(mean_root_QD_per_mg_root=mean(root_QD_per_mg_root,na.rm = T),
+            se_root=stderr(root_QD_per_mg_root))
+
+Figure_S3DLinear<-ggplot()+
+  geom_pointrange(aes(x=comp_nutrients,ymin=mean_root_QD_per_mg_root-se_root,ymax=mean_root_QD_per_mg_root+se_root,
+                      y=mean_root_QD_per_mg_root),
+                  data=ineq_nut_level_control_fig,size=0.5)+
+  geom_abline(intercept = 2.735853e-04,slope=3.447013e-06)+
+  scale_y_continuous(limits = c(0,0.001))+
+  xlab("Nutrient Compartment")+
+  ylab("P transfer to roots (nmol QD-apatite per mg root)")+
+  theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),
+        axis.line = element_line(colour="black"))+
+  scale_x_continuous(breaks=c(10,30,50,70,90))
+Figure_S3DLinear
+
+png("./Figures/Figure_S3D_Linear.png",res = 300,width = 5,height = 5,units = "in")
+Figure_S3DLinear
+dev.off()
+
+pdf("./Figures/Figure_S3D_Linear.pdf")
+Figure_S3DLinear
+dev.off()
+
+save(ineq_nut_level_control,file="./Models/ineq_nut_level_control")
 
