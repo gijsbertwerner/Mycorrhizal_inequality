@@ -15,8 +15,6 @@ library(quantreg)
 library(dplyr)
 ```
 
-GW: This is a rerun of the July 27-31 analysis + report script, for the CB resub. Purpose is to double check if the figures are still the samem, which they should be, beause no new/mistaken data, unless I am forgeting something (very well possible!). It's all exactly the same as July 2018, e.g. numbers are NOT yet updated to new CB order, but I also added the analytical strategy from Science Nov 2018 resubmission (i.e the glmer strategy), alongside the previous Kruskal-wallis (see my main text comment)
-
 This document presents the statistical analyses performed and reported in Whiteside et al. We here report all the statistical tests performed, including diagnostic plots and the full paper figures. 
 
 ## Reproducibility 
