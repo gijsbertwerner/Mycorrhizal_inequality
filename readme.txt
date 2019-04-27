@@ -2,9 +2,9 @@ Mycorrhizal Inequality Paper - Data Analysis
 Gijsbert Werner, University of Oxford
 February 2019
 
-This folder contains all the data and scripts to reproduce the full analyses from Whiteside et al.
+This folder contains all the data and scripts to reproduce the full analyses from Whiteside et al. (2019) Mycorrhizal fungi respond to resource inequality by moving phosphorus from rich to poor patches across networks.
 
-All data files are available as csv-files in the 'Data' folder. All data and scripts are also archived in Dryad (link to follow upon publication).
+All data files are available as csv-files in the 'Data' folder. All data and scripts are also archived in Dryad (doi: 10.5061/dryad.n343sh3).
 
 All analyses were peformed in R 3.4.4. 
 
